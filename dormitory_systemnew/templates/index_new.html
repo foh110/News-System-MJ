@@ -1,0 +1,422 @@
+{% extends "base_new.html" %}
+
+{% block title %}仪表盘 - {{ system_name }}{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item active">仪表盘</li>
+{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- 统计卡片 -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card primary h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="stat-label">总学生数</div>
+                            <div class="stat-value">{{ stats.total_students }}</div>
+                        </div>
+                        <div class="stat-icon primary">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <span class="text-success small">
+                            <i class="bi bi-arrow-up"></i> 男生: {{ stats.male_count }}
+                        </span>
+                        <span class="text-danger small ms-2">
+                            <i class="bi bi-arrow-up"></i> 女生: {{ stats.female_count }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card success h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="stat-label">总宿舍数</div>
+                            <div class="stat-value">{{ stats.total_dorms }}</div>
+                        </div>
+                        <div class="stat-icon success">
+                            <i class="bi bi-house-door-fill"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <span class="text-muted small">楼栋数: {{ stats.total_buildings }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card info h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="stat-label">床位使用率</div>
+                            <div class="stat-value">{{ stats.bed_rate }}</div>
+                        </div>
+                        <div class="stat-icon info">
+                            <i class="bi bi-percent"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <div class="progress" style="height: 6px;">
+                            <div class="progress-bar bg-info" role="progressbar" 
+                                 style="width: {{ stats.bed_rate }}" 
+                                 aria-valuenow="{{ stats.bed_rate|replace('%', '') }}" 
+                                 aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card warning h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="stat-label">待处理事项</div>
+                            <div class="stat-value">{{ stats.pending_repairs + stats.unpaid_fees }}</div>
+                        </div>
+                        <div class="stat-icon warning">
+                            <i class="bi bi-bell-fill"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <span class="text-warning small">
+                            报修: {{ stats.pending_repairs }}
+                        </span>
+                        <span class="text-danger small ms-2">
+                            欠费: {{ stats.unpaid_fees }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 图表和列表 -->
+    <div class="row">
+        <!-- 入住趋势图 -->
+        <div class="col-xl-8 col-lg-7 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-graph-up me-2 text-primary"></i>入住趋势
+                    </h5>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                            最近6个月
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#">最近3个月</a></li>
+                            <li><a class="dropdown-item" href="#">最近6个月</a></li>
+                            <li><a class="dropdown-item" href="#">最近1年</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="occupancyChart" style="height: 350px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 性别分布 -->
+        <div class="col-xl-4 col-lg-5 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-pie-chart-fill me-2 text-success"></i>性别分布
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="genderChart" style="height: 350px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- 最新公告 -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-megaphone-fill me-2 text-info"></i>最新公告
+                    </h5>
+                    <a href="{{ url_for('notices') }}" class="btn btn-sm btn-outline-primary">查看全部</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for notice in notices %}
+                        <a href="{{ url_for('notice_detail', notice_id=notice.id) }}" 
+                           class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">
+                                    {% if notice.is_top %}
+                                        <span class="badge bg-danger me-1">置顶</span>
+                                    {% endif %}
+                                    {{ notice.title }}
+                                </h6>
+                                <small class="text-muted">{{ format_datetime(notice.created_at, '%m-%d') }}</small>
+                            </div>
+                            <p class="mb-1 text-muted small">
+                                <span class="badge bg-{{ 'primary' if notice.notice_type == 'system' else 'success' if notice.notice_type == 'notice' else 'warning' }}">
+                                    {{ '系统' if notice.notice_type == 'system' else '通知' if notice.notice_type == 'notice' else '活动' }}
+                                </span>
+                            </p>
+                        </a>
+                        {% else %}
+                        <div class="list-group-item text-center py-4 text-muted">
+                            <i class="bi bi-inbox fs-1"></i>
+                            <p class="mt-2">暂无公告</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 最近报修 -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-tools me-2 text-warning"></i>最近报修
+                    </h5>
+                    <a href="{{ url_for('repairs') }}" class="btn btn-sm btn-outline-primary">查看全部</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>单号</th>
+                                    <th>宿舍</th>
+                                    <th>类型</th>
+                                    <th>状态</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for repair in recent_repairs %}
+                                <tr>
+                                    <td>
+                                        <a href="#" class="text-decoration-none">
+                                            {{ repair.repair_no }}
+                                        </a>
+                                    </td>
+                                    <td>{{ repair.building_no }} {{ repair.dormitory_no }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'danger' if repair.repair_type == 'electric' else 'info' if repair.repair_type == 'water' else 'secondary' }}">
+                                            {{ '电路' if repair.repair_type == 'electric' else '水路' if repair.repair_type == 'water' else '其他' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ 'warning' if repair.status == 'pending' else 'info' if repair.status == 'processing' else 'success' }}">
+                                            {{ '待处理' if repair.status == 'pending' else '处理中' if repair.status == 'processing' else '已完成' }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-4 text-muted">
+                                        <i class="bi bi-check-circle fs-1"></i>
+                                        <p class="mt-2">暂无报修记录</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 快捷操作 -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-lightning-fill me-2 text-warning"></i>快捷操作
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-xl-2 col-lg-3 col-md-4 col-6">
+                    <a href="{{ url_for('student_add') }}" class="btn btn-primary w-100 py-3 d-flex flex-column align-items-center">
+                        <i class="bi bi-person-plus-fill fs-2 mb-2"></i>
+                        <span>新增学生</span>
+                    </a>
+                </div>
+                <div class="col-xl-2 col-lg-3 col-md-4 col-6">
+                    <a href="{{ url_for('dormitory_add') }}" class="btn btn-success w-100 py-3 d-flex flex-column align-items-center">
+                        <i class="bi bi-house-add-fill fs-2 mb-2"></i>
+                        <span>新增宿舍</span>
+                    </a>
+                </div>
+                <div class="col-xl-2 col-lg-3 col-md-4 col-6">
+                    <a href="{{ url_for('repair_add') }}" class="btn btn-warning w-100 py-3 d-flex flex-column align-items-center">
+                        <i class="bi bi-wrench-adjustable fs-2 mb-2"></i>
+                        <span>提交报修</span>
+                    </a>
+                </div>
+                <div class="col-xl-2 col-lg-3 col-md-4 col-6">
+                    <a href="{{ url_for('fee_add') }}" class="btn btn-info w-100 py-3 d-flex flex-column align-items-center">
+                        <i class="bi bi-cash-coin fs-2 mb-2"></i>
+                        <span>录入费用</span>
+                    </a>
+                </div>
+                <div class="col-xl-2 col-lg-3 col-md-4 col-6">
+                    <a href="{{ url_for('notice_add') }}" class="btn btn-secondary w-100 py-3 d-flex flex-column align-items-center">
+                        <i class="bi bi-megaphone fs-2 mb-2"></i>
+                        <span>发布公告</span>
+                    </a>
+                </div>
+                <div class="col-xl-2 col-lg-3 col-md-4 col-6">
+                    <a href="{{ url_for('student_export') }}" class="btn btn-dark w-100 py-3 d-flex flex-column align-items-center">
+                        <i class="bi bi-file-earmark-excel fs-2 mb-2"></i>
+                        <span>导出数据</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<script>
+    // 入住趋势图
+    const occupancyChart = echarts.init(document.getElementById('occupancyChart'));
+    occupancyChart.setOption({
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: { type: 'cross' }
+        },
+        legend: {
+            data: ['男生', '女生', '总数'],
+            bottom: 0
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '10%',
+            top: '10%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: {{ trend_data.months | tojson | safe }},
+            axisLine: { lineStyle: { color: '#858796' } }
+        },
+        yAxis: {
+            type: 'value',
+            axisLine: { lineStyle: { color: '#858796' } },
+            splitLine: { lineStyle: { color: '#eaecf4' } }
+        },
+        series: [
+            {
+                name: '男生',
+                type: 'line',
+                smooth: true,
+                data: {{ trend_data.male | tojson | safe }},
+                itemStyle: { color: '#4e73df' },
+                areaStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        { offset: 0, color: 'rgba(78, 115, 223, 0.3)' },
+                        { offset: 1, color: 'rgba(78, 115, 223, 0.05)' }
+                    ])
+                }
+            },
+            {
+                name: '女生',
+                type: 'line',
+                smooth: true,
+                data: {{ trend_data.female | tojson | safe }},
+                itemStyle: { color: '#e83e8c' },
+                areaStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                        { offset: 0, color: 'rgba(232, 62, 140, 0.3)' },
+                        { offset: 1, color: 'rgba(232, 62, 140, 0.05)' }
+                    ])
+                }
+            },
+            {
+                name: '总数',
+                type: 'line',
+                smooth: true,
+                data: {{ trend_data.total | tojson | safe }},
+                itemStyle: { color: '#1cc88a' },
+                lineStyle: { type: 'dashed' }
+            }
+        ]
+    });
+
+    // 性别分布图
+    const genderChart = echarts.init(document.getElementById('genderChart'));
+    genderChart.setOption({
+        tooltip: {
+            trigger: 'item',
+            formatter: '{b}: {c} ({d}%)'
+        },
+        legend: {
+            orient: 'vertical',
+            left: 'left',
+            top: 'center'
+        },
+        series: [
+            {
+                name: '性别分布',
+                type: 'pie',
+                radius: ['40%', '70%'],
+                center: ['60%', '50%'],
+                avoidLabelOverlap: false,
+                itemStyle: {
+                    borderRadius: 10,
+                    borderColor: '#fff',
+                    borderWidth: 2
+                },
+                label: {
+                    show: false,
+                    position: 'center'
+                },
+                emphasis: {
+                    label: {
+                        show: true,
+                        fontSize: 20,
+                        fontWeight: 'bold'
+                    }
+                },
+                labelLine: { show: false },
+                data: [
+                    { 
+                        value: {{ stats.male_count or 0 }}, 
+                        name: '男生',
+                        itemStyle: { color: '#4e73df' }
+                    },
+                    { 
+                        value: {{ stats.female_count or 0 }}, 
+                        name: '女生',
+                        itemStyle: { color: '#e83e8c' }
+                    }
+                ]
+            }
+        ]
+    });
+
+    // 响应式调整
+    window.addEventListener('resize', function() {
+        occupancyChart.resize();
+        genderChart.resize();
+    });
+</script>
+{% endblock %}

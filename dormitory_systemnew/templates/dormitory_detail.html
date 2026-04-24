@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h4 class="mb-0">宿舍详情</h4>
+    </div>
+    <div class="card-body">
+        {% if dorm %}
+        <p><strong>楼栋:</strong> {{ dorm.building_no }} - {{ dorm.building_name }}</p>
+        <p><strong>宿舍号:</strong> {{ dorm.dormitory_no }}</p>
+        <p><strong>容量:</strong> {{ dorm.capacity }}人</p>
+        <p><strong>已入住:</strong> {{ dorm.occupied }}人</p>
+        <hr>
+        <h5>入住学生</h5>
+        {% if students %}
+        <table class="table table-striped">
+            <thead><tr><th>学号</th><th>姓名</th><th>性别</th><th>床位号</th></tr></thead>
+            <tbody>
+                {% for s in students %}
+                <tr><td>{{ s.student_no }}</td><td>{{ s.name }}</td><td>{{ s.gender }}</td><td>{{ s.bed_no or '-' }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="alert alert-info">暂无入住学生</div>
+        {% endif %}
+        {% else %}
+        <div class="alert alert-warning">宿舍不存在</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

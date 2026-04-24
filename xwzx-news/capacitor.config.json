@@ -1,0 +1,13 @@
+{
+  "appId": "com.xwzx.news",
+  "appName": "新闻资讯",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "http"
+  },
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": true
+    }
+  }
+}

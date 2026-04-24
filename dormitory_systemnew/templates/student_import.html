@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <h4>批量导入学生</h4>
+    </div>
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="mb-3">
+                <label>Excel 文件</label>
+                <input type="file" class="form-control" name="file" accept=".xlsx,.xls" required>
+            </div>
+            <button type="submit" class="btn btn-primary">开始导入</button>
+        </form>
+        <hr>
+        <p>Excel 模板要求：第一行包含列名：<strong>学号、姓名、性别、年龄、宿舍号、电话</strong>（顺序可任意）</p>
+        <p>示例数据：<br>2021001,张三,男,20,101栋201,13800000000</p>
+    </div>
+</div>
+{% endblock %}

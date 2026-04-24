@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h4 class="mb-0">发布公告</h4>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="/notice/add">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="mb-3">
+                <label class="form-label">标题</label>
+                <input type="text" name="title" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">内容</label>
+                <textarea name="content" class="form-control" rows="5" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">公告类型</label>
+                <select name="notice_type" class="form-select">
+                    <option value="notice">通知</option>
+                    <option value="warning">警告</option>
+                    <option value="activity">活动</option>
+                    <option value="system">系统</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">优先级</label>
+                <select name="priority" class="form-select">
+                    <option value="low">低</option>
+                    <option value="normal" selected>普通</option>
+                    <option value="high">高</option>
+                    <option value="urgent">紧急</option>
+                </select>
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" name="is_top" class="form-check-input" id="isTop">
+                <label class="form-check-label" for="isTop">置顶</label>
+            </div>
+            <button type="submit" class="btn btn-primary">发布</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

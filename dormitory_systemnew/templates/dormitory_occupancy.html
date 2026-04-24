@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">宿舍调宿</h4>
+    </div>
+    <div class="card-body">
+        {% if error_msg %}
+        <div class="alert alert-danger">{{ error_msg }}</div>
+        {% endif %}
+        <form method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="row">
+                <div class="col-md-4">
+                    <label>选择学生</label>
+                    <select name="student_id" class="form-select" required>
+                        <option value="">--请选择学生--</option>
+                        {% for stu in students %}
+                        <option value="{{ stu.id }}">{{ stu.student_no }} - {{ stu.name }} (当前宿舍：{{ stu.dormitory_no or '未分配' }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label>新宿舍</label>
+                    <select name="new_dorm_no" class="form-select" required>
+                        <option value="">--请选择宿舍--</option>
+                        {% for dorm in dorms %}
+                        <option value="{{ dorm.dormitory_no }}">{{ dorm.building }} {{ dorm.dormitory_no }} ({{ dorm.occupied }}/{{ dorm.capacity }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary">确认调宿</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">宿舍占用情况</h5>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <thead class="table-dark">
+                <tr><th>楼栋</th><th>宿舍号</th><th>可住人数</th><th>已住人数</th><th>剩余床位</th><th>入住率</th></tr>
+            </thead>
+            <tbody>
+                {% for dorm in dorms %}
+                <tr>
+                    <td>{{ dorm.building }}</td>
+                    <td>{{ dorm.dormitory_no }}</td>
+                    <td>{{ dorm.capacity }}</td>
+                    <td>{{ dorm.occupied }}</td>
+                    <td>{{ dorm.capacity - dorm.occupied }}</td>
+                    <td>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: {{ (dorm.occupied/dorm.capacity)*100 }}%">
+                                {{ (dorm.occupied/dorm.capacity)*100|round(1) }}%
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <div class="card-header"><h4>编辑学生</h4></div>
+    <div class="card-body">
+        {% if error_msg %}<div class="alert alert-danger">{{ error_msg|safe }}</div>{% endif %}
+        <form method="post" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="mb-3">
+                <label>照片</label>
+                <input type="file" class="form-control" name="photo" accept="image/*">
+                {% if student.photo_path %}
+                    <img src="{{ student.photo_path }}" width="100" class="mt-2">
+                {% endif %}
+            </div>
+            <div class="mb-3">
+                <label>学号 <span class="text-danger">(必须11位数字)</span></label>
+                <input type="text" class="form-control" name="student_no" value="{{ student.student_no }}" required>
+                <div class="invalid-feedback" style="display: none;">学号必须是11位数字！</div>
+            </div>
+            <div class="mb-3">
+                <label>姓名</label>
+                <input type="text" class="form-control" name="name" value="{{ student.name }}" required>
+            </div>
+            <div class="mb-3">
+                <label>性别</label>
+                <select class="form-select" name="gender" required>
+                    <option value="男" {% if student.gender == '男' %}selected{% endif %}>男</option>
+                    <option value="女" {% if student.gender == '女' %}selected{% endif %}>女</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label>年龄</label>
+                <input type="number" class="form-control" name="age" value="{{ student.age or '' }}">
+            </div>
+            <div class="mb-3">
+                <label>宿舍号 <span class="text-danger">(只能选择已有宿舍)</span></label>
+                <select class="form-select" name="dormitory_no">
+                    <option value="">未分配</option>
+                    {% for dorm_no in dormitories %}
+                    <option value="{{ dorm_no }}" {% if student.dormitory_no == dorm_no %}selected{% endif %}>{{ dorm_no }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label>联系电话</label>
+                <input type="text" class="form-control" name="phone" value="{{ student.phone or '' }}">
+                <div class="invalid-feedback" style="display: none;">联系电话必须是11位数字！</div>
+            </div>
+            <button type="submit" class="btn btn-primary">更新</button>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const studentNoInput = document.querySelector('input[name="student_no"]');
+    const phoneInput = document.querySelector('input[name="phone"]');
+    const form = studentNoInput.closest('form');
+    const studentNoFeedback = studentNoInput.parentNode.querySelector('.invalid-feedback');
+    const phoneFeedback = phoneInput.parentNode.querySelector('.invalid-feedback');
+
+    function validateInput(input, regex, feedbackElement) {
+        const value = input.value.trim();
+        const isValid = regex.test(value);
+        if (!isValid && value !== '') {
+            input.classList.add('is-invalid');
+            feedbackElement.style.display = 'block';
+        } else {
+            input.classList.remove('is-invalid');
+            feedbackElement.style.display = 'none';
+        }
+        return isValid || value === '';
+    }
+
+    function validateStudentNo() {
+        return validateInput(studentNoInput, /^[0-9]{11}$/, studentNoFeedback);
+    }
+
+    function validatePhone() {
+        if (phoneInput.value.trim() === '') {
+            phoneInput.classList.remove('is-invalid');
+            phoneFeedback.style.display = 'none';
+            return true;
+        }
+        return validateInput(phoneInput, /^[0-9]{11}$/, phoneFeedback);
+    }
+
+    studentNoInput.addEventListener('input', validateStudentNo);
+    phoneInput.addEventListener('input', validatePhone);
+
+    form.addEventListener('submit', function(event) {
+        const isStudentNoValid = validateStudentNo();
+        const isPhoneValid = validatePhone();
+        if (!isStudentNoValid || !isPhoneValid) {
+            event.preventDefault();
+        }
+    });
+});
+</script>
+{% endblock %}

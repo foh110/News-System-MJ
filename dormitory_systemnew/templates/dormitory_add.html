@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">新增宿舍</h4>
+    </div>
+    <div class="card-body">
+        {% if error_msg %}
+        <div class="alert alert-danger">{{ error_msg }}</div>
+        {% endif %}
+        <form method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="mb-3">
+                <label for="building_no" class="form-label">楼栋号</label>
+                <input type="text" class="form-control" id="building_no" name="building_no" required placeholder="例如：1号楼">
+            </div>
+            <div class="mb-3">
+                <label for="dormitory_no" class="form-label">宿舍号</label>
+                <input type="text" class="form-control" id="dormitory_no" name="dormitory_no" required placeholder="例如：101">
+            </div>
+            <div class="mb-3">
+                <label for="capacity" class="form-label">可住人数</label>
+                <input type="number" class="form-control" id="capacity" name="capacity" required min="1" placeholder="4、6、8">
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <button type="button" class="btn btn-secondary" onclick="history.back()">返回</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

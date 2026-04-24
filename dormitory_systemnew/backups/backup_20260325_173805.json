@@ -1,0 +1,148 @@
+{
+  "student": [
+    {
+      "id": 3,
+      "student_no": "2024003",
+      "name": "王五",
+      "gender": "男",
+      "age": 20,
+      "dormitory_no": "102",
+      "phone": "13800138003",
+      "create_time": "2026-03-24 13:48:31",
+      "update_time": "2026-03-24 13:48:31",
+      "deleted": 0,
+      "photo_path": null
+    },
+    {
+      "id": 5,
+      "student_no": "2024005",
+      "name": "钱七",
+      "gender": "女",
+      "age": 20,
+      "dormitory_no": "102",
+      "phone": "13800138005",
+      "create_time": "2026-03-24 13:48:31",
+      "update_time": "2026-03-24 13:48:31",
+      "deleted": 0,
+      "photo_path": null
+    },
+    {
+      "id": 6,
+      "student_no": "20210801006",
+      "name": "张广雪",
+      "gender": "女",
+      "age": 30,
+      "dormitory_no": "201",
+      "phone": "18756901545",
+      "create_time": "2026-03-24 14:18:19",
+      "update_time": "2026-03-25 14:14:28",
+      "deleted": 0,
+      "photo_path": "/static/uploads/20210801006_1774419268.jpg"
+    },
+    {
+      "id": 7,
+      "student_no": "20240801006",
+      "name": "毛健",
+      "gender": "男",
+      "age": 18,
+      "dormitory_no": "103",
+      "phone": "18756901545",
+      "create_time": "2026-03-25 10:02:22",
+      "update_time": "2026-03-25 10:02:22",
+      "deleted": 0,
+      "photo_path": null
+    }
+  ],
+  "dormitory": [
+    {
+      "id": 1,
+      "dormitory_no": "101",
+      "building": "A栋",
+      "capacity": 4,
+      "occupied": 3,
+      "create_time": "2026-03-24 13:48:31",
+      "update_time": "2026-03-24 13:48:31",
+      "deleted": 0
+    },
+    {
+      "id": 2,
+      "dormitory_no": "102",
+      "building": "A栋",
+      "capacity": 4,
+      "occupied": 2,
+      "create_time": "2026-03-24 13:48:31",
+      "update_time": "2026-03-24 13:48:31",
+      "deleted": 0
+    },
+    {
+      "id": 3,
+      "dormitory_no": "103",
+      "building": "A栋",
+      "capacity": 4,
+      "occupied": 0,
+      "create_time": "2026-03-24 13:48:31",
+      "update_time": "2026-03-24 13:48:31",
+      "deleted": 0
+    },
+    {
+      "id": 4,
+      "dormitory_no": "201",
+      "building": "A栋",
+      "capacity": 4,
+      "occupied": 0,
+      "create_time": "2026-03-24 13:48:31",
+      "update_time": "2026-03-24 13:48:31",
+      "deleted": 0
+    },
+    {
+      "id": 5,
+      "dormitory_no": "202",
+      "building": "A栋",
+      "capacity": 4,
+      "occupied": 0,
+      "create_time": "2026-03-24 13:48:31",
+      "update_time": "2026-03-24 13:48:31",
+      "deleted": 0
+    },
+    {
+      "id": 6,
+      "dormitory_no": "101",
+      "building": "B栋",
+      "capacity": 6,
+      "occupied": 0,
+      "create_time": "2026-03-24 13:48:31",
+      "update_time": "2026-03-24 13:48:31",
+      "deleted": 0
+    },
+    {
+      "id": 7,
+      "dormitory_no": "102",
+      "building": "B栋",
+      "capacity": 6,
+      "occupied": 0,
+      "create_time": "2026-03-24 13:48:31",
+      "update_time": "2026-03-24 13:48:31",
+      "deleted": 0
+    },
+    {
+      "id": 8,
+      "dormitory_no": "201",
+      "building": "B栋",
+      "capacity": 6,
+      "occupied": 0,
+      "create_time": "2026-03-24 13:48:31",
+      "update_time": "2026-03-24 13:48:31",
+      "deleted": 0
+    }
+  ],
+  "sys_user": [
+    {
+      "id": 1,
+      "username": "baby",
+      "password": "27e6d2113ebaacf43b7fba029dac65df59a8dd1fabcb1a4521376c8c356ce27e",
+      "create_time": "2026-03-24 13:48:31",
+      "update_time": "2026-03-25 15:26:41",
+      "deleted": 0
+    }
+  ]
+}

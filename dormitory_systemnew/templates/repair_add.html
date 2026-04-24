@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h4 class="mb-0">新增报修</h4>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="/repair/add">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="mb-3">
+                <label class="form-label">楼栋</label>
+                <select name="building_no" class="form-select" required>
+                    {% for b in buildings %}
+                    <option value="{{ b.building_no }}">{{ b.building_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">宿舍号</label>
+                <input type="text" name="dormitory_no" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">报修人姓名</label>
+                <input type="text" name="student_name" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">联系电话</label>
+                <input type="text" name="student_phone" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">报修类型</label>
+                <select name="repair_type" class="form-select">
+                    <option value="electric">电路</option>
+                    <option value="water">水路</option>
+                    <option value="furniture">家具</option>
+                    <option value="door_window">门窗</option>
+                    <option value="appliance">电器</option>
+                    <option value="other">其他</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">紧急程度</label>
+                <select name="urgency" class="form-select">
+                    <option value="low">低</option>
+                    <option value="medium" selected>中</option>
+                    <option value="high">高</option>
+                    <option value="urgent">紧急</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">问题描述</label>
+                <textarea name="description" class="form-control" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">提交</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

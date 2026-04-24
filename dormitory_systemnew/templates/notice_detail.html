@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h4 class="mb-0">{{ notice.title }}</h4>
+    </div>
+    <div class="card-body">
+        <p class="text-muted">发布人: {{ notice.creator_name or '系统' }} | 发布时间: {{ notice.publish_time or notice.created_at }}</p>
+        <hr>
+        <p>{{ notice.content }}</p>
+    </div>
+</div>
+{% endblock %}
